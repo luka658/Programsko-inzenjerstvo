@@ -6,7 +6,9 @@ Naglasak je na sigurnosti, anonimnosti i jednostavnosti korištenja. Ova aplikac
 nastoji smanjiti jaz između studenta i psihologa i olakšava studentima postupak
 pronalaska osobe za psihološko savjetovanje.
 
-## Motivacija i opis aplikacije
+Projekt iz predmeta Programsko inženjerstvo na FER-u, 2025.
+
+## Motivacija i opis projekta
 Sve veći broj studenata suočava se s problemima mentalnog zdravlja, ali zbog
 stigme, troškova ili nedostatka vremena često ne traže stručnu pomoć.
 
@@ -29,17 +31,24 @@ chatbotom i savjetuje studenta i po potrebi dogovara sastanak.
 potrebi onemogućuje daljnji rad psihologu ili suspendira korisnički račun
 studentu u slučaju kršenja smjernica). 
 
-## Tehničke specifikacije
+## Funkcijski zahtjevi
+> ...
+
+## Tehnologije
 Aplikacija koristi Next.js (Tailwind + Shadcn/UI) na frontendu, Django na
 backendu, PostgreSQL bazu (s dodatkom pgvector), te integracije s LangChainom,
 Google Calendarom, Gmailom, OAuth (Google) autentifikacijom i Google Mapsom.
 
+> ...instalacija!
 
 
+## Članovi tima - G07.1
+Damjan Crnković, Luka Bubnjević, Renato Dolić, Ivan Draženović, Ivan Dražetić, Krešimir Kantolić, Niko Kalle Zirdum
 
-Projekt iz predmeta Programsko inženjerstvo na FER-u, 2025.
+## 📝 Kodeks ponašanja
+> ...
 
-Grupa - G07.1
+## 📝 Licenca
+> ...
 
-Luka Bubnjević, Renato Dolić, Ivan Dražetić, Ivan Draženović, Niko Kalle Zirdum,
-Damjan Crnković, Krešimir Kantolić.
+
