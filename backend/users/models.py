@@ -1,0 +1,57 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.base_user import BaseUserManager
+# Create your models here.
+
+class CustomUserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            return ValueError("Korisnik mora imati e-mail adresu!")
+        
+        if not extra_fields.get("sex"):
+            return ValueError("Korisnik mora ispuniti polje spol")
+        if not extra_fields.get("age"):
+            return ValueError("Korisnik mora ispuniti polje godine")
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("sex", "M")
+        extra_fields.setdefault("age", 21)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser mora biti staff")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser mora biti superuser")
+        
+        return self.create_user(email, password, **extra_fields)
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True, max_length=200)
+    username = models.CharField(max_length=200, null=True, blank=True)
+
+    sex = models.CharField(max_length=10, blank=True, null=True)
+    age = models.PositiveIntegerField(blank=True, null=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
+    
+    pass
+
+
+
+
