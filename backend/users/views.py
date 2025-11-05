@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from accounts.serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
