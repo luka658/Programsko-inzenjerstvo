@@ -51,4 +51,11 @@ Damjan Crnković, Luka Bubnjević, Renato Dolić, Ivan Draženović, Ivan Draže
 ## 📝 Licenca
 > ...
 
+## Dokumentacija
+
+Detaljna tehnička i funkcionalna dokumentacija projekta nalazi se u datoteci
+`docs/DOKUMENTACIJA.md`. Tamo su opisani svi view-evi, funkcijski i
+nefunkcijski zahtjevi, model baze podataka te upute za lokalno pokretanje.
+
+
 
