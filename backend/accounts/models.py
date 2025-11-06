@@ -75,9 +75,14 @@ class Caretaker(models.Model):
         on_delete=models.CASCADE,
         related_name='caretaker'
     )
-    about_me = models.TextField(max_length=800)
+    first_name = models.CharField(max_length=50, db_index=True) #nepotrebno osim ako abstract user ne indexira
+    last_name = models.CharField(max_length=50, db_index=True) #
+    about_me = models.TextField(blank=True, max_length=800)
     specialisation = models.CharField(max_length=50)
     tel_num = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}, {self.specialisation}"
 
 
 

@@ -1,7 +1,8 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.db.models import Q
 
 from django.contrib.auth import get_user_model, authenticate
+from accounts.models import Caretaker
+from .serializers import CaretakerSerializer
 from rest_framework import generics
 from rest_framework.response import Response
 from accounts.serializers import RegisterSerializer, LoginSerializer, UserSerializer
@@ -195,6 +196,27 @@ def resetPasswordConfirmView(request, uidb64, token):
     response.delete_cookie("refreshToken")
     return response
 
-def caretakers(request):
-    res = request.GET.get('name', 'x')
-    return HttpResponse(f"caretaker page: {res}")
+
+
+
+
+
+
+@api_view(["GET"])
+def search_caretakers(request):
+    query = request.GET.get("q", "").strip()
+
+    print(query)
+
+    if not query:
+        return Response([])
+
+    caretakers = Caretaker.objects.filter(
+        Q(first_name__icontains=query) |
+        Q(last_name__icontains=query)
+    )
+
+    print(caretakers)
+
+    serialized = CaretakerSerializer(caretakers, many=True)
+    return Response(serialized.data)

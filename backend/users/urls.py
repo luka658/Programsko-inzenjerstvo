@@ -1,7 +1,7 @@
 
 
 from django.urls import path
-from .views import RegisterView, LoginView, requestPasswordResetView, resetPasswordConfirmView, logoutView, deleteUserView, caretakers
+from .views import RegisterView, LoginView, requestPasswordResetView, resetPasswordConfirmView, logoutView, deleteUserView, search_caretakers
 
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     path('delete/', deleteUserView, name="delete-user"),
     path('forgot-password/', requestPasswordResetView, name="forgot-password"),
     path('reset-password/<uidb64>/<token>/', resetPasswordConfirmView, name="reset-password"),
-    path('caretakers/', caretakers, name='caretakers'),
+
+    path('caretakers/search/', search_caretakers, name='search_caretakers'),
 
 ]
