@@ -7,8 +7,12 @@ API endpoints:
 
 | **Endpoint** | **Definirane metode** | **Komentar(opcionalno)** |
 |--------------|-------------------------|--------------------------------|
-| /auth/login | | |
-| /auth/register |  |
+| /auth/login | POST | |
+| /auth/register | POST |
+| /auth/logout | POST |
+| /auth/delete | DELETE |
+| /auth/forgot-password | POST |
+| /auth/reset-password/<uidb64>/<token> | POST |
 | /users/caretakers/search | GET | searcha se putem queryja npr. **/users/caretakers/search?q=luka** za psihologa koji se zove/preziva luka |
 
 
