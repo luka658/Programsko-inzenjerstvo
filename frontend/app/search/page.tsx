@@ -13,19 +13,18 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { searchCaretakers } from "@/fetchers/users";
 
-const BACKEND = "http://localhost:8000";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 export default function SearchPage() {
     const params = useSearchParams();
     const q = params.get("q") ?? "";
 
-    const { data, error } = useSWR(
-        q ? `${BACKEND}/users/caretakers/search?q=${encodeURIComponent(q)}` : null,
-        (url) => fetch(url).then((r) => r.json())
-    );
+    const { data, error, isLoading } = useSWR(q || null, (q) => searchCaretakers(q))
 
-    const list = data ?? [];
+    const caretakerList = data ?? [];
 
     return (
         <div className="mx-auto max-w-2xl p-6 space-y-6">
@@ -40,7 +39,7 @@ export default function SearchPage() {
                 </Card>
             )}
 
-            {q && list.length === 0 && !error && (
+            {q && caretakerList.length === 0 && !error && (
                 <Card>
                     <CardContent>
                         <CardTitle>No matches for “{q}”.</CardTitle>
@@ -49,10 +48,10 @@ export default function SearchPage() {
             )}
 
             <div className="grid gap-3">
-                {list.map((p: any, i: number) => (
-                    <Card key={p.id ?? i} >
+                {caretakerList.map((caretaker) => (
+                    <Card key={caretaker.user_id} >
                         <CardHeader>
-                            <CardTitle className="text-xl font-semibold">{p.first_name} {p.last_name}</CardTitle>
+                            <CardTitle className="text-xl font-semibold">{caretaker.first_name} {caretaker.last_name}</CardTitle>
                             <CardDescription>Caretaker</CardDescription>
                             <CardAction>
                                 <Avatar>
@@ -63,18 +62,18 @@ export default function SearchPage() {
                         </CardHeader>
                         <CardContent>
                             <CardDescription>Specialization:</CardDescription>
-                                <p>{p.specialisation}</p>
-                                {p.about_me?.trim() && (
+                                <p>{caretaker.specialisation}</p>
+                                {caretaker.about_me?.trim() && (
                                     <>
                                         <br />
                                         <CardDescription>About me:</CardDescription>
-                                        <p>{p.about_me}</p>
+                                        <p>{caretaker.about_me}</p>
                                     </>
                                 )}
                         </CardContent>
                         <CardFooter className="flex gap-2">
                             <CardDescription>Telephone: </CardDescription>
-                            <p>{p.tel_num}</p>
+                            <p>{caretaker.tel_num}</p>
                         </CardFooter>
                     </Card>
                 ))}
