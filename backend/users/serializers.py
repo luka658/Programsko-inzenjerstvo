@@ -14,7 +14,8 @@ class CaretakerShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Caretaker
-        fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num"]
+        #fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num"]
+        fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num", "help_categories"]
 
 class CaretakerLongSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
@@ -27,8 +28,8 @@ class CaretakerLongSerializer(serializers.ModelSerializer):
 
 
 class MeSerializer(BaseUserSerializer):
-    """Serializer for the current authenticated user including caretaker profile if exists."""
-    caretaker = CaretakerLongSerializer(read_only=True)
+
+    caretaker = CaretakerShortSerializer(read_only=True)
     student = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
@@ -70,7 +71,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class CaretakerUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Caretaker
-        fields = ["first_name", "last_name", "about_me", "specialisation", "tel_num"]
+        fields = ["about_me", "specialisation", "tel_num"]
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -83,6 +84,6 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ["studying_at", "year_of_study", "about_me"]
-        fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "working_since"]
+        #fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "working_since"]
 
 

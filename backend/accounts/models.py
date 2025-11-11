@@ -77,7 +77,7 @@ class Student(models.Model):
     )
     studying_at = models.CharField(max_length=150, blank=True, null=True)
     year_of_study = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_YEAR_OF_STUDY)])
-
+    about_me = models.TextField(blank=True, max_length=800)
     is_anonymous = models.BooleanField(default=True, help_text="If True, only the student's sex and age will be shown to the caretaker.")
 
     def __str__(self):
@@ -114,5 +114,3 @@ class HelpCategory(models.Model):
 
     def __str__(self):
         return f"{self.label}"
-
-

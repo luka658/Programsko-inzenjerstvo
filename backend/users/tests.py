@@ -36,8 +36,11 @@ class UsersProfileTests(TestCase):
 		self.assertTrue(user.check_password('newpass'))
 
 	def test_caretaker_profile_get_and_update(self):
-		user = self._create_user(email='care@example.com')
-		caretaker = Caretaker.objects.create(user=user, first_name='Ana', last_name='Ivić', about_me='Hi', specialisation='CBT', tel_num='0123456789')
+		user = self._create_user(email='care@example.com', username='ana')
+		user.first_name = 'Ana'
+		user.last_name = 'Ivić'
+		user.save()
+		caretaker = Caretaker.objects.create(user=user, about_me='Hi', specialisation='CBT', tel_num='0123456789')
 		self.client.force_authenticate(user=user)
 
 		resp = self.client.get('/users/me/caretaker/')

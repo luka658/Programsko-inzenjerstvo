@@ -1,8 +1,5 @@
 from django.db.models import Q
 from accounts.models import Caretaker, Student
-from .serializers import CaretakerSerializer
-
-from accounts.models import Caretaker
 from .serializers import CaretakerLongSerializer, CaretakerShortSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -27,16 +24,12 @@ def search_caretakers(request):
     serialized = CaretakerShortSerializer(caretakers, many=True)
     return Response(serialized.data)
 
-    serialized = CaretakerSerializer(caretakers, many=True)
-    return Response(serialized.data)
-
 
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .serializers import (
-    CaretakerSerializer,
     MeSerializer,
     UpdateUserSerializer,
     ChangePasswordSerializer,
@@ -47,10 +40,6 @@ from .serializers import (
 @api_view(["GET", "PUT", "PATCH"])
 @permission_classes([IsAuthenticated])
 def my_profile(request):
-    """Get or update the authenticated user's basic profile (username, sex, age).
-
-    Email is read-only. Only the owner (authenticated user) can access this.
-    """
     user = request.user
     if request.method == "GET":
         serializer = MeSerializer(user)
@@ -84,27 +73,25 @@ def change_password(request):
 @api_view(["GET", "PUT", "PATCH"])
 @permission_classes([IsAuthenticated])
 def my_caretaker_profile(request):
-    """Get or update the authenticated user's caretaker profile (about_me, etc.)."""
     try:
         caretaker = request.user.caretaker
     except Caretaker.DoesNotExist:
         return Response({"detail": "Korisnik nije psiholog/caretaker."}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        return Response(CaretakerSerializer(caretaker).data)
+        return Response(CaretakerShortSerializer(caretaker).data)
 
     partial = request.method == "PATCH"
     serializer = CaretakerUpdateSerializer(caretaker, data=request.data, partial=partial)
     if serializer.is_valid():
         serializer.save()
-        return Response(CaretakerSerializer(caretaker).data)
+        return Response(CaretakerShortSerializer(caretaker).data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET", "PUT", "PATCH"])
 @permission_classes([IsAuthenticated])
 def my_student_profile(request):
-    """Get or update the authenticated user's student profile (bio, studying_at, etc.)."""
     try:
         student = request.user.student
     except Student.DoesNotExist:
