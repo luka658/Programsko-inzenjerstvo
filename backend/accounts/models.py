@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
+from django.core.validators import MaxValueValidator
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -25,8 +26,6 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("sex", "M")
-        extra_fields.setdefault("age", 21)
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser mora biti staff")
@@ -37,11 +36,19 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    MAX_USER_AGE = 100
+
     email = models.EmailField(unique=True, max_length=200)
     username = models.CharField(max_length=200, null=True, blank=True)
 
-    sex = models.CharField(max_length=10, blank=True, null=True)
-    age = models.PositiveIntegerField(blank=True, null=True)
+    SEX_CHOICES = [
+        ("M", "MALE"),
+        ("F", "FEMALE"),
+        ("O", "OTHER"),
+    ]
+
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=False, null=False)
+    age = models.PositiveIntegerField(blank=True, null=True, validators=[MaxValueValidator(MAX_USER_AGE)])
 
     datum_registracije = models.DateTimeField(auto_now_add=True)
 
@@ -58,14 +65,21 @@ class User(AbstractUser):
 
 
 class Student(models.Model):
+    MAX_YEAR_OF_STUDY = 12
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         primary_key=True,
         on_delete=models.CASCADE,
         related_name='student'
     )
-    studying_at = models.CharField(max_length=100)
-    year_of_study = models.IntegerField()
+    studying_at = models.CharField(max_length=150, blank=True, null=True)
+    year_of_study = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_YEAR_OF_STUDY)])
+
+    is_anonymous = models.BooleanField(default=True, help_text="If True, only the student's sex and age will be shown to the caretaker.")
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Caretaker(models.Model):
@@ -75,15 +89,28 @@ class Caretaker(models.Model):
         on_delete=models.CASCADE,
         related_name='caretaker'
     )
-    first_name = models.CharField(max_length=50, db_index=True) #nepotrebno osim ako abstract user ne indexira
-    last_name = models.CharField(max_length=50, db_index=True) #
+
     about_me = models.TextField(blank=True, max_length=800)
     specialisation = models.CharField(max_length=50)
-    tel_num = models.CharField(max_length=10)
+    working_since = models.PositiveIntegerField(blank=True, null=True, help_text="The year in which the person began working as a psychologist.")
+    tel_num = models.CharField(max_length=15, blank=True, null=True)
+    office_address = models.TextField(max_length=150, blank=True, null=True)
+    academic_title = models.CharField(max_length=10, blank=True, null=True, help_text="Professional (academic) title.")
+    user_image_url = models.CharField(blank=True, null=True)
+
+    help_categories = models.ManyToManyField(
+        'HelpCategory', related_name='caretakers', blank=True
+    )
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}, {self.specialisation}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.academic_title}"
 
 
+class HelpCategory(models.Model):
+    label = models.CharField(max_length=50, unique=True)
+    description = models.TextField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.label}"
 
 
