@@ -38,6 +38,8 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     MAX_USER_AGE = 100
 
+    first_name = models.CharField(max_length=150, blank=False, null=False)
+    last_name = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(unique=True, max_length=200)
     username = models.CharField(max_length=200, null=True, blank=True)
 
