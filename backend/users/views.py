@@ -1,6 +1,9 @@
 from django.db.models import Q
 from accounts.models import Caretaker, Student
 from .serializers import CaretakerSerializer
+
+from accounts.models import Caretaker
+from .serializers import CaretakerLongSerializer, CaretakerShortSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -17,11 +20,12 @@ def search_caretakers(request):
         return Response([])
 
     caretakers = Caretaker.objects.filter(
-        Q(first_name__icontains=query) |
-        Q(last_name__icontains=query)
+        Q(user__first_name__icontains=query) |
+        Q(user__last_name__icontains=query)
     )
 
-    print(caretakers)
+    serialized = CaretakerShortSerializer(caretakers, many=True)
+    return Response(serialized.data)
 
     serialized = CaretakerSerializer(caretakers, many=True)
     return Response(serialized.data)
@@ -118,3 +122,19 @@ def my_student_profile(request):
         from .serializers import StudentSerializer
         return Response(StudentSerializer(student).data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def caretakerById(request, id):
+    try:
+        caretaker = Caretaker.objects.get(user_id=id)
+    except:
+        return Response({"error":f"No caretaker was found matching the specified ID ({id})."}, status=404)
+
+    serialized = CaretakerLongSerializer(caretaker)
+    return Response(serialized.data)
+
+
+#jos se ne koristi
+@api_view(["GET"])
+def caretakerBySlug(request, slug):
+    return Response(f"slug: {id}")

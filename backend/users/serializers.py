@@ -7,15 +7,28 @@ from accounts.models import Student
 User = get_user_model()
 
 
-class CaretakerSerializer(serializers.ModelSerializer):
+class CaretakerShortSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='label')
+
     class Meta:
         model = Caretaker
         fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num"]
 
+class CaretakerLongSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='label')
+
+    class Meta:
+        model = Caretaker
+        fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "about_me", "working_since", "tel_num", "office_address"]
+
 
 class MeSerializer(BaseUserSerializer):
     """Serializer for the current authenticated user including caretaker profile if exists."""
-    caretaker = CaretakerSerializer(read_only=True)
+    caretaker = CaretakerLongSerializer(read_only=True)
     student = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
@@ -70,3 +83,6 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ["studying_at", "year_of_study", "about_me"]
+        fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "working_since"]
+
+
