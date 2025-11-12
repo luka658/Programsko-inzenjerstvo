@@ -50,9 +50,15 @@ class User(AbstractUser):
     ]
 
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=False, null=False)
-    age = models.PositiveIntegerField(blank=True, null=True, validators=[MaxValueValidator(MAX_USER_AGE)])
+    age = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_USER_AGE)])
 
     datum_registracije = models.DateTimeField(auto_now_add=True)
+
+    ROLE_CHOICES = (
+        ("caretaker", "Caretaker"),
+        ("student", "Student"),
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
 
     USERNAME_FIELD = "email"
@@ -76,8 +82,7 @@ class Student(models.Model):
         related_name='student'
     )
     studying_at = models.CharField(max_length=150, blank=True, null=True)
-    year_of_study = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_YEAR_OF_STUDY)])
-    about_me = models.TextField(blank=True, max_length=800)
+    year_of_study = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_YEAR_OF_STUDY)], blank=True, null=True)
     is_anonymous = models.BooleanField(default=True, help_text="If True, only the student's sex and age will be shown to the caretaker.")
 
     def __str__(self):

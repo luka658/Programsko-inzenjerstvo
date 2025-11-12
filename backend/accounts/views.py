@@ -1,7 +1,13 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import (
+    CaretakerRegisterSerializer,
+    LoginSerializer,
+    StudentRegisterSerializer,
+    UserSerializer,
+    RegisterSerializer,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, UntypedToken, BlacklistedToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -14,10 +20,41 @@ from django.utils.encoding import force_bytes
 from django.conf import settings
 from django.core.mail import send_mail
 
-# Create your views here.
+
+User = get_user_model()
 
 
-# User = get_user_model()
+def build_auth_response(user):
+    """Return a Response containing JWT tokens and set auth cookies for a given user."""
+    refresh = RefreshToken.for_user(user)
+    access = refresh.access_token
+
+    response = Response({
+        "user": UserSerializer(user).data,
+        "refresh": str(refresh),
+        "access": str(access),
+    })
+
+    response.set_cookie(
+        key="accessToken",
+        value=str(access),
+        httponly=True,
+        secure=False,    #True
+        samesite='Lax',
+        path="/",
+    )
+
+    response.set_cookie(
+        key="refreshToken",
+        value=str(refresh),
+        httponly=True,
+        secure=False,    #True
+        samesite='Lax',
+        path="/",
+    )
+
+    return response
+
 
 # class RegisterView(generics.CreateAPIView):
 #     queryset = User.objects.all()
@@ -28,132 +65,46 @@ from django.core.mail import send_mail
 #         serializer = self.get_serializer(data=request.data)
 #         serializer.is_valid(raise_exception=True)
 
-#         email = serializer.validated_data["email"]
+#         email = serializer.validated_data.get("email")
 #         if User.objects.filter(email=email).exists():
 #             return Response({"error": "Korisnik s ovim email-om već postoji"}, status=400)
 
 #         user = serializer.save()
+#         return build_auth_response(user)
 
-#         refresh = RefreshToken.for_user(user)
-#         access = refresh.access_token
 
-#         response = Response({
-#             "user": UserSerializer(user).data,
-#             "refresh": str(refresh),
-#             "access": str(access),
-#         })
 
-#         response.set_cookie(
-#             key="accessToken",
-#             value=str(access),
-#             httponly=True,
-#             secure=True,
-#             samesite=None,
-#             path="/"
-#         )
-
-#         response.set_cookie(
-#             key="refreshToken",
-#             value=str(refresh),
-#             httponly=True,
-#             secure=True,
-#             samesite=None,
-#             path="/"
-#         )
-
-#         return response
-    
-# class LoginView(generics.CreateAPIView):
-#     serializer_class = LoginSerializer
-#     permission_classes=[AllowAny]
-
-#     def post(self, request, *args, **kwargs):
-#         email = request.data["email"]
-#         password=request.data["password"]
-
-#         user = authenticate(request, email=email, password=password)
-
-#         if not user:
-#             return Response({"error": "Neispravno korisničko ime ili lozinka"}, status=400)
-        
-
-#         refresh = RefreshToken.for_user(user)
-#         access = refresh.access_token
-
-#         response = Response({
-#             "user": UserSerializer(user).data,
-#             "refresh": str(refresh),
-#             "access": str(access),
-#         })
-
-#         response.set_cookie(
-#             key="accessToken",
-#             value=str(access),
-#             httponly=True,
-#             secure=True,
-#             samesite=None,
-#             path="/"
-#         )
-
-#         response.set_cookie(
-#             key="refreshToken",
-#             value=str(refresh),
-#             httponly=True,
-#             secure=True,
-#             samesite=None,
-#             path="/",
-#         )
-
-#         return response
-    
-
-    ##
-
-User = get_user_model()
-
-class RegisterView(generics.CreateAPIView):
+class CaretakerRegisterView(generics.CreateAPIView):
+    serializer_class = CaretakerRegisterSerializer
     queryset = User.objects.all()
     permission_classes = [AllowAny]
-    serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        email = serializer.validated_data.get("email")
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "Korisnik s ovim email-om već postoji"}, status=400)
+        # provjera prebacena u serializer
+        # email = serializer.validated_data.get('user').get('email')
+        # if User.objects.filter(email=email).exists():
+        #     return Response({"error": "Korisnik s ovim email-om već postoji"}, status=400)
 
-        user = serializer.save()
+        serializer.save()
+        return Response({"message": "Caretaker registration successful. Please log in."}, status=201)
 
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
 
-        response = Response({
-            "user": UserSerializer(user).data,
-            "refresh": str(refresh),
-            "access": str(access),
-        })
+class StudentRegisterView(generics.CreateAPIView):
+    serializer_class = StudentRegisterSerializer
+    queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
-        response.set_cookie(
-            key="accessToken",
-            value=str(access),
-            httponly=True,
-            secure=False,    #True
-            samesite='Lax', #None
-            path="/"
-        )
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        response.set_cookie(
-            key="refreshToken",
-            value=str(refresh),
-            httponly=True,
-            secure=False, #True
-            samesite='Lax', #None
-            path="/"
-        )
+        serializer.save()
+        return Response({"message": "Student registration successful. Please log in."}, status=201)
 
-        return response
+
     
     
 class LoginView(generics.CreateAPIView):
@@ -169,35 +120,7 @@ class LoginView(generics.CreateAPIView):
         if not user:
             return Response({"error": "Neispravno korisničko ime ili lozinka"}, status=400)
         
-
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
-
-        response = Response({
-            "user": UserSerializer(user).data,
-            "refresh": str(refresh),
-            "access": str(access),
-        })
-
-        response.set_cookie(
-            key="accessToken",
-            value=str(access),
-            httponly=True,
-            secure=False, #True
-            samesite='Lax', #None
-            path="/"
-        )
-
-        response.set_cookie(
-            key="refreshToken",
-            value=str(refresh),
-            httponly=True,
-            secure=False, #True
-            samesite='Lax', #None
-            path="/",
-        )
-
-        return response
+        return build_auth_response(user)
     
     
 @api_view(['POST'])
@@ -218,7 +141,7 @@ def deleteUserView(request):
     try:
         user = User.objects.get(id=request.user.id)
     except User.DoesNotExist:
-        return Response({"erro  r": "Korisnik ne postoji"}, status=404)
+        return Response({"error": "Korisnik ne postoji"}, status=404)
     
     user.delete()
     return Response({"message": "Korisnik uspješno izbrisan"}, status=204)
