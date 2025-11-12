@@ -3,7 +3,9 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, UntypedToken, BlacklistedToken
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.exceptions import TokenError
 
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.tokens import default_token_generator
@@ -285,4 +287,48 @@ def resetPasswordConfirmView(request, uidb64, token):
     response = Response({"message": "Lozinka je uspješno resetirana."}, status=200) 
     response.delete_cookie("accessToken")
     response.delete_cookie("refreshToken")
+    return response
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def refresh_access_token_view(request):
+    refresh_token = request.COOKIES.get("refreshToken")
+    if not refresh_token:
+        return Response({"error": "Refresh token nije pronađen"}, status=401)
+    
+    serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
+
+    try:
+        serializer.is_valid(raise_exception=True)
+
+    except TokenError:
+        response = Response({"error": "Neispravan ili istekao refresh token"}, status=401)
+        response.delete_cookie("accessToken")
+        response.delete_cookie("refreshToken")
+        return response
+    
+    new_access = serializer.validated_data.get("access")
+    new_refresh = serializer.validated_data.get("refresh", None)
+
+    response = Response({"access": new_access})
+
+    response.set_cookie(
+        key="accessToken",
+        value=new_access,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+        path="/",
+    )
+
+    response.set_cookie(
+        key="refreshToken",
+        value=new_refresh,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+        path="/",
+    )
+
     return response
