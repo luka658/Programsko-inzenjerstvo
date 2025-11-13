@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link'
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import SearchBar from "@/components/search-bar";
@@ -12,6 +13,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { searchCaretakers } from "@/fetchers/users";
 
@@ -25,6 +27,7 @@ export default function SearchPage() {
     const { data, error, isLoading } = useSWR(q || null, (q) => searchCaretakers(q))
 
     const caretakerList = data ?? [];
+    console.log("API response:", caretakerList);
 
     return (
         <div className="mx-auto max-w-2xl p-6 space-y-6">
@@ -49,33 +52,43 @@ export default function SearchPage() {
 
             <div className="grid gap-3">
                 {caretakerList.map((caretaker) => (
-                    <Card key={caretaker.user_id} >
-                        <CardHeader>
-                            <CardTitle className="text-xl font-semibold">{caretaker.first_name} {caretaker.last_name}</CardTitle>
-                            <CardDescription>Caretaker</CardDescription>
-                            <CardAction>
-                                <Avatar>
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                            </CardAction>
-                        </CardHeader>
-                        <CardContent>
-                            <CardDescription>Specialization:</CardDescription>
-                                <p>{caretaker.specialisation}</p>
-                                {caretaker.about_me?.trim() && (
-                                    <>
-                                        <br />
-                                        <CardDescription>About me:</CardDescription>
-                                        <p>{caretaker.about_me}</p>
-                                    </>
-                                )}
-                        </CardContent>
-                        <CardFooter className="flex gap-2">
-                            <CardDescription>Telephone: </CardDescription>
-                            <p>{caretaker.tel_num}</p>
-                        </CardFooter>
-                    </Card>
+                    <Link key={caretaker.user_id} href={`http://localhost:3001/caretaker/${caretaker.user_id}`}>
+                        <Card>
+                            <CardHeader className="mt-1">
+                                <div className="flex ml-1">
+                                    <Avatar className="my-1 size-12">
+                                        <AvatarImage src={caretaker.user_image_url || "https://github.com/shadcn.png"} />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                    <div className="mx-5 my-1">
+                                        <CardTitle className="text-xl font-semibold">{caretaker.first_name} {caretaker.last_name}</CardTitle>
+                                        <CardDescription>{caretaker.academic_title?.trim() || "Caretaker"}</CardDescription>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <div className="mx-5">
+                                <Separator />
+                            </div>
+                            <CardContent>
+                                <CardDescription>Specialization:</CardDescription>
+                                    <p>{caretaker.specialisation}</p>
+                                    {caretaker.help_categories.length > 0 && (
+                                        <>
+                                            <CardDescription className="mt-4">Help categories:</CardDescription>
+                                            <p>{caretaker.help_categories.join(", ")}</p>
+                                        </>
+                                    )}
+                                    {caretaker.working_since && (
+                                        <>
+                                            <CardDescription className="mt-4">Working since:</CardDescription>
+                                            <p>{caretaker.working_since}</p>
+                                        </>
+                                    )}
+                            </CardContent>
+                            <CardFooter className="flex gap-2">
+                            </CardFooter>
+                        </Card>
+                    </Link>
                 ))}
             </div>
         </div>

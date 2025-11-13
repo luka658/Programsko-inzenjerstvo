@@ -14,8 +14,9 @@ class CaretakerShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Caretaker
-        #fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num"]
-        fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num", "help_categories"]
+        # fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num"]
+        # fields = ["user_id", "first_name", "last_name", "about_me", "specialisation", "tel_num", "help_categories"]
+        fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "working_since"]
 
 class CaretakerLongSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
