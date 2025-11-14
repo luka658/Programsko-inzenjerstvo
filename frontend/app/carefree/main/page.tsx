@@ -35,7 +35,7 @@ export default function MainPage() {
                         <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" data-active href="">Home</Link>
                         <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href="">Messages</Link>
                         <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href="">Calendar</Link>
-                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href={`http://localhost:3001/search`}>Search</Link>
+                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href={`/search`}>Search</Link>
                     </CardContent>
                 </div>
                 <div className="p-[0.5em] rounded-full flex bg-background">
@@ -44,7 +44,7 @@ export default function MainPage() {
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <CardContent  className="my-1">
-                        <Link className="font-semibold cursor-pointer hover:underline" href={`http://localhost:3001/myprofile`}>My Profile</Link>
+                        <Link className="font-semibold cursor-pointer hover:underline" href={`/carefree/myprofile`}>My Profile</Link>
                     </CardContent>
                 </div>
             </div>

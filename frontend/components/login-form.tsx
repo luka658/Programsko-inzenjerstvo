@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
@@ -25,6 +26,7 @@ export function LoginForm({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter(); 
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +48,7 @@ export function LoginForm({
         localStorage.setItem("access", data.access);
         localStorage.setItem("refresh", data.refresh);
         alert("Login successful!");
+        router.push("/carefree/main");
         
       } else {
         

@@ -52,7 +52,7 @@ export default function SearchPage() {
 
             <div className="grid gap-3">
                 {caretakerList.map((caretaker) => (
-                    <Link key={caretaker.user_id} href={`http://localhost:3001/caretaker/${caretaker.user_id}`}>
+                    <Link key={caretaker.user_id} href={`http://localhost:3001/carefree/caretaker/${caretaker.user_id}`}>
                         <Card>
                             <CardHeader className="mt-1">
                                 <div className="flex ml-1">
