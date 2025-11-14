@@ -81,11 +81,11 @@ class CaretakerRegisterSerializer(serializers.ModelSerializer):
 
 
 class StudentRegisterSerializer(serializers.ModelSerializer):
-    user = RegisterSerializer()
+    user_id = serializers.IntegerField()
 
     class Meta:
         model = Student
-        fields = ["user", "studying_at", "year_of_study", "is_anonymous"]
+        fields = ["user_id", "studying_at", "year_of_study", "is_anonymous"]
 
     # def validate(self, data):
     #     if User.objects.filter(username=data['username'], caretaker__isnull=False).exists():
@@ -93,10 +93,18 @@ class StudentRegisterSerializer(serializers.ModelSerializer):
     #     return data
 
     def create(self, validated_data):
-        user_data = validated_data.pop("user")
-        user_data["role"] = "student"
+        user_id = validated_data.pop("user_id")
 
-        user = RegisterSerializer().create(user_data)
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"user": "User with given id does not exist."})
+        
+        if hasattr(user, 'student'):
+            raise serializers.ValidationError({"user": "This user is already registered as a student."})
+
+        if hasattr(user, 'caretaker'):
+            raise serializers.ValidationError({"user": "This user is already registered as a caretaker."})
 
         student = Student.objects.create(user=user, **validated_data)
         return student

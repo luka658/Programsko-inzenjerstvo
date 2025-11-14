@@ -157,7 +157,7 @@ export default function SignupUserForm({ logInPath, onSignupComplete }: ISignupU
                 </FieldDescription>
                 <RadioGroup name="role" defaultValue="student">
                   <div className="grid grid-cols-2 gap-2">
-                    <FieldLabel htmlFor="role-student">
+                    <FieldLabel htmlFor="role-student" className="hover:cursor-pointer">
                       <Field orientation="horizontal">
                         <FieldContent>
                           <FieldTitle>Student</FieldTitle>
@@ -165,7 +165,7 @@ export default function SignupUserForm({ logInPath, onSignupComplete }: ISignupU
                         <RadioGroupItem value="student" id="role-student" />
                       </Field>
                     </FieldLabel>
-                    <FieldLabel htmlFor="role-caretaker">
+                    <FieldLabel htmlFor="role-caretaker" className="hover:cursor-pointer">
                       <Field orientation="horizontal">
                         <FieldContent>
                           <FieldTitle>Caretaker</FieldTitle>

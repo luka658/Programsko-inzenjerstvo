@@ -1,6 +1,7 @@
 "use client"
 
 import SignupCaretakerForm from "@/components/signup-caretaker-form";
+import SignupStudentForm from "@/components/signup-student-form";
 import SignupUserForm from "@/components/signup-user-form";
 import { use, useState } from "react";
 
@@ -24,7 +25,7 @@ export default function SignupPage() {
                     <SignupUserForm logInPath="./login" onSignupComplete={onSignupComplete} />
                 ) : (
                     userRole === "student" ? (
-                        <p>student sign up</p>
+                        <SignupStudentForm userId={userId} />
                     ) : (
                         <SignupCaretakerForm userId={userId}/>
                     )
