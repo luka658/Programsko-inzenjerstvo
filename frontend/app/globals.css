@@ -222,3 +222,81 @@
   }
 
 }
+
+.wrapper {
+  min-height: 10rem;
+  background-color: oklch(0.926 0.0278 185.55);
+}
+
+.header {
+  height: 5rem;
+  background-color: white;
+  box-shadow: 0px 1px 2px 0px oklch(0.783 0.1136 182.2);
+  padding: 1em 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  width: 3rem;
+  height: auto;
+}
+
+.title {
+  color: oklch(0.783 0.1136 182.2);
+  font-weight: bolder;
+}
+
+.menu {
+  padding: 0.4em;
+  background-color: oklch(0.926 0.0278 185.55);
+  /*margin-left: 8rem;*/
+}
+
+#current {
+  color: oklch(0.783 0.1136 182.2)
+}
+
+#krug {
+  background-color: oklch(0.783 0.1136 182.2);
+}
+
+.myprofile {
+  padding: 0.5em;
+  background-color: oklch(0.926 0.0278 185.55);
+  /*margin-left: 30rem;*/
+  display: flex;
+}
+
+.aside {
+  margin: 0.8rem;
+}
+
+.myCaretakerCard {
+  margin-bottom: 0.8rem;
+  height: 10rem;
+  padding: 1.5rem 1rem;
+  box-shadow: 0px 1px 2px 0px oklch(0.783 0.1136 182.2);
+}
+
+.latestConvosCard {
+  height: 63vh;
+  padding: 1.5rem 1rem;
+  box-shadow: 0px 1px 2px 0px oklch(0.783 0.1136 182.2);
+}
+
+.chat {
+  grid-area: chat;
+  margin-right: 0.8rem;
+}
+
+.chatbox {
+  margin-bottom: 0.8rem;
+}
+
+.chatbar {
+  height: 3.2rem;
+  background-color: white;
+  box-shadow: 0px 1px 2px 0px oklch(0.783 0.1136 182.2);
+  margin-bottom: 0.8rem;
+}
