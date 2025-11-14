@@ -126,10 +126,16 @@ class LoginView(generics.CreateAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logoutView(request):
+    try:
+        refresh_token = request.COOKIES.get("refreshToken")
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except:
+        pass
+
     response = Response({"message": "Uspješno odjavljen"}, status=200)
     response.delete_cookie("accessToken")
     response.delete_cookie("refreshToken")
-
     return response
 
 
@@ -245,13 +251,14 @@ def refresh_access_token_view(request):
         path="/",
     )
 
-    response.set_cookie(
-        key="refreshToken",
-        value=new_refresh,
-        httponly=True,
-        secure=False,
-        samesite="Lax",
-        path="/",
-    )
+    if new_refresh:
+        response.set_cookie(
+            key="refreshToken",
+            value=new_refresh,
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+        )
 
     return response
