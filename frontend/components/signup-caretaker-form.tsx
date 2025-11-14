@@ -119,7 +119,7 @@ export default function SignupCaretakerForm({ userId } : ISignupCaretakerFormPro
                                 name="specialisation"
                                 id="specialisation"
                                 type="text"
-                                placeholder="npr. Kognitivna terapija"
+                                placeholder="Kognitivna terapija"
                                 required
                             />
                         </Field>
