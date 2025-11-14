@@ -9,7 +9,10 @@ class CookieJWTAuthentication(JWTAuthentication):
         
         try:
             validated_token = self.get_validated_token(access_token)
-            return self.get_user(validated_token), validated_token
+            if validated_token.get("token_type") != "access":
+                return None
+            
+            return (self.get_user(validated_token), validated_token)
         
         except Exception:
             return None
