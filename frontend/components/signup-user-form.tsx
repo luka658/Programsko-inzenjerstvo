@@ -27,6 +27,7 @@ import { Button } from "./ui/button"
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import Link from "next/link"
 import { useState } from "react"
+import GoogleAuthButton from "@/components/google-auth-button"
 
 
 interface ISignupUserFormProps {
@@ -184,6 +185,19 @@ export default function SignupUserForm({ logInPath, onSignupComplete }: ISignupU
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link href={logInPath}>Log in</Link>
                 </FieldDescription>
+              </Field>
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    ili
+                  </span>
+                </div>
+              </div>
+              <Field>
+                <GoogleAuthButton text="Registriraj se s Google-om" />
               </Field>
             </FieldGroup>
           </FieldGroup>

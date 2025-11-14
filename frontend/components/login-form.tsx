@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import GoogleAuthButton from "@/components/google-auth-button";
 
 export function LoginForm({
   className,
@@ -105,6 +106,19 @@ export function LoginForm({
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <Link href="./signup" className="underline">Sign up</Link>
                 </FieldDescription>
+              </Field>
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    ili
+                  </span>
+                </div>
+              </div>
+              <Field>
+                <GoogleAuthButton text="Prijavi se s Google-om" />
               </Field>
             </FieldGroup>
           </form>
