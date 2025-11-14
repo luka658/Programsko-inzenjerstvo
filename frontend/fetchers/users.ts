@@ -1,3 +1,4 @@
+
 import { fetcher } from "./fetcher";
 
 const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -33,7 +34,7 @@ interface caretakerLong {
 // }
 
 export function searchCaretakers(query: string) {
-    return fetcher<Array<caretaker>>(`${BACKEND_API}/users/caretakers/search?q=${encodeURIComponent(query)}`)
+    return fetcher<Array<caretaker>>(`${BACKEND_API}/users/caretakers/search?q=${encodeURIComponent(query)}`,  { credentials: "include" })
 }
 
 export function searchCaretakerById(query: string) {

@@ -1,33 +1,60 @@
+
 "use client";
 
-import Link from 'next/link'
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { use, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 import SearchBar from "@/components/search-bar";
 import {
-    Card,
-    CardAction,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { searchCaretakers } from "@/fetchers/users";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
-
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 export default function SearchPage() {
     const params = useSearchParams();
     const q = params.get("q") ?? "";
+    const router = useRouter();
 
-    const { data, error, isLoading } = useSWR(q || null, (q) => searchCaretakers(q))
+    const [authChecked, setAuthChecked] = useState(false);
+    const [isAuthed, setIsAuthed] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await fetch(`${BACKEND}/users/me/`, {
+                    credentials: "include",
+                });
+                if (response.ok) {
+                    setIsAuthed(true);
+                } else {
+                    setIsAuthed(false);
+                    router.push("/accounts/login");
+                }
+            } catch (error) {
+                setIsAuthed(false);
+                router.push("/accounts/login");
+            } finally {
+                setAuthChecked(true);
+            }
+        })();
+    }, [router]);
+
+    const { data, error, isLoading } = useSWR(
+        authChecked && isAuthed && q ? q : null,
+        (query) => searchCaretakers(query));
 
     const caretakerList = data ?? [];
-    console.log("API response:", caretakerList);
 
     return (
         <div className="mx-auto max-w-2xl p-6 space-y-6">
@@ -37,7 +64,7 @@ export default function SearchPage() {
                 <Card className="border-red-400 bg-red-50">
                     <CardContent className="p-4 text-red-700">
                         <CardTitle className="text-lg">Backend error</CardTitle>
-                        <p>Unable to fetch caretakers. Please try again later.</p>
+                        <p>Unable to fetch caretakers. Please try again later. The error is: {error.message}</p>
                     </CardContent>
                 </Card>
             )}
