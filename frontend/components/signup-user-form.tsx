@@ -26,21 +26,69 @@ import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import Link from "next/link"
+import { useState } from "react"
 
 
 interface ISignupUserFormProps {
   logInPath: string
+  onSignupComplete: (role: string, userId: string) => void
 }
 
-export default function SignupUserForm({ logInPath }: ISignupUserFormProps) {
-  const handleSubmit = async (e: any) => {
-        e.preventDefault(); // spriječi reload
+export default function SignupUserForm({ logInPath, onSignupComplete }: ISignupUserFormProps) {
+  // const handleSubmit = async (e: any) => {
+  //       e.preventDefault(); // spriječi reload
 
-        const formData = new FormData(e.target);
-        const entries = Object.fromEntries(formData.entries());
+  //       const formData = new FormData(e.target);
+  //       const entries = Object.fromEntries(formData.entries());
+  //       console.log(formData.entries())
+  //       console.log(entries);
+  //       nextStep()
+  //   };
 
-        console.log(entries);
-    };
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+    // setError(null)
+
+    try {
+      const formData = new FormData(e.currentTarget)
+      const payload = Object.fromEntries(formData.entries())
+      // console.log("entries: ", formData.entries())
+      // console.log("payload: ", payload)
+      // console.log("role: ", payload.role)
+
+      const endpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register/user/`
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({...payload}),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(
+          errorData.detail || errorData.error || "Registration failed"
+        )
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      onSignupComplete(payload.role as string, data.id)
+      console.log("success")
+    } catch (err) {
+      // setError(err instanceof Error ? err.message : "An error occurred")
+      console.error("Signup error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -69,7 +117,7 @@ export default function SignupUserForm({ logInPath }: ISignupUserFormProps) {
               </Field>
               <Field>
                 <FieldLabel htmlFor="sex">Sex</FieldLabel>
-                <Select name="sex">
+                <Select name="sex" required>
                   <SelectTrigger id="sex">
                     <SelectValue placeholder="Choose sex" />
                   </SelectTrigger>
@@ -98,13 +146,6 @@ export default function SignupUserForm({ logInPath }: ISignupUserFormProps) {
                 Must be at least 6 characters long.
               </FieldDescription>
             </Field>
-            {/* <Field>
-                <FieldLabel htmlFor="confirm-password">
-                    Confirm Password
-                </FieldLabel>
-                <Input id="confirm-password" type="password" required />
-                <FieldDescription>Please confirm your password.</FieldDescription>
-            </Field> */}
 
             <FieldGroup>
               <FieldSet>
@@ -139,7 +180,7 @@ export default function SignupUserForm({ logInPath }: ISignupUserFormProps) {
 
             <FieldGroup>
               <Field>
-                <Button type="submit">Continue</Button>
+                <Button type="submit" disabled={isLoading}>{!isLoading ? "Continue" : "Loading..."}</Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link href={logInPath}>Log in</Link>
                 </FieldDescription>
