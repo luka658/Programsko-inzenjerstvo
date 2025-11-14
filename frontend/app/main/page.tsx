@@ -20,25 +20,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function MainPage() {
     return (
-        <div className="wrapper min-h-screen min-w-[1200px] min-h-[800px] mx-auto">
-            <div className="header">
+        <div className="min-h-screen min-w-[1200px] min-h-[800px] mx-auto">
+            <div className="h-[5rem] p-[1em] flex justify-between bg-card shadow-sm shadow-primary" id="header">
                 <div className="flex items-center gap-1"> 
-                    <div  className="logo">
+                    <div  className="w-[3rem] h-auto">
                         <img src="/images/carefree-logo-assistant-new.png" alt="Carefree Logo"/>
                     </div>
-                    <div className="title">
+                    <div>
                         <CardTitle className="p-1 text-3xl font-bold">CareFree</CardTitle>
                     </div>
                 </div>
-                <div className="menu hidden md:flex rounded-full bg-[oklch(0.926_0.0278_185.55)] px-4 py-1">
+                <div className="p-[0.4em] flex rounded-full px-4 py-2 bg-background">
                     <CardContent className="flex">
-                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-[oklch(0.783_0.1136_182.2)]" data-active href="">Home</Link>
-                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-[oklch(0.783_0.1136_182.2)]" href="">Messages</Link>
-                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-[oklch(0.783_0.1136_182.2)]" href="">Calendar</Link>
-                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-[oklch(0.783_0.1136_182.2)]" href={`http://localhost:3001/search`}>Search</Link>
+                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" data-active href="">Home</Link>
+                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href="">Messages</Link>
+                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href="">Calendar</Link>
+                        <Link className="mx-5 my-1 font-semibold hover:underline data-[active=true]:text-primary" href={`http://localhost:3001/search`}>Search</Link>
                     </CardContent>
                 </div>
-                <div className="myprofile rounded-full flex">
+                <div className="p-[0.5em] rounded-full flex bg-background">
                     <Avatar className="size-8">
                         <AvatarImage src={"https://github.com/shadcn.png"} />
                         <AvatarFallback>CN</AvatarFallback>
@@ -48,20 +48,20 @@ export default function MainPage() {
                     </CardContent>
                 </div>
             </div>
-            <div className="main flex gap-6 h-[calc(100vh-5rem)]">
-                <div className="aside flex flex-col gap-3 w-[23rem]">
-                    <Card className="myCaretakerCard">
+            <div className="flex gap-6 h-[calc(100vh-5rem)]">
+                <div className="m-[0.8rem] flex flex-col gap-3 w-[23rem]">
+                    <Card className="mb-[0.8rem] h-[10rem] py-[1.5rem] px-[1rem]">
                         <CardTitle>My Caretaker</CardTitle>
                     </Card>
-                    <Card className="latestConvosCard flex-1">
+                    <Card className="h-[63vh] py-[1.5rem] px-[1rem] flex-1">
                         <CardTitle>Latest Conversations</CardTitle>
                     </Card>
                 </div>
-                <div className="chat mt-3 flex flex-col flex-1 gap-3">
-                    <div className="chatbox flex-1 rounded-md bg-[oklch(0.926_0.0278_185.55)] overflow-y-auto">
+                <div className="mr-[0.8rem] mt-3 flex flex-col flex-1 gap-3">
+                    <div className="mb-[0.8rem] flex-1 rounded-md overflow-y-auto">
 
                     </div>
-                    <InputGroup className="chatbar">
+                    <InputGroup className="h-[3.2rem] mb-[0.8rem] shadow-sm shadow-primary bg-card">
                         <InputGroupInput></InputGroupInput>
                     </InputGroup>
                 </div>
