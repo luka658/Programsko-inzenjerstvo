@@ -51,8 +51,9 @@ export default function SearchPage() {
     }, [router]);
 
     const { data, error, isLoading } = useSWR(
-        authChecked && isAuthed && q ? q : null,
-        (query) => searchCaretakers(query));
+        authChecked && isAuthed ? ["caretakerSearch", q ?? ""] : null,
+        () => searchCaretakers(q ?? "")
+    );
 
     const caretakerList = data ?? [];
 

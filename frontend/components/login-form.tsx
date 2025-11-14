@@ -50,7 +50,9 @@ export function LoginForm({
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "Login failed");
-      }
+        
+      } 
+
       router.push("/carefree/main");
     } catch (error) {
       setError((error as Error).message || "Login failed");
@@ -120,19 +122,7 @@ export function LoginForm({
                 </div>
               </div>
               <Field>
-                  <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      ili
-                    </span>
-                  </div>
-                </div>
-                <Field>
-                  <GoogleAuthButton text="Prijavi se s Google-om" />
-                </Field>
+                <GoogleAuthButton text="Prijavi se s Google-om" />
               </Field>
             </FieldGroup>
           </form>
