@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import CaretakerRegisterView, LoginView, StudentRegisterView, deleteUserView, logoutView, refresh_access_token_view, requestPasswordResetView, resetPasswordConfirmView
+from .views import CaretakerRegisterView, LoginView, RegisterUserView, StudentRegisterView, deleteUserView, logoutView, refresh_access_token_view, requestPasswordResetView, resetPasswordConfirmView
 
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('reset-password/<uidb64>/<token>/', resetPasswordConfirmView, name="reset-password"),
     path('refresh/', refresh_access_token_view, name="refresh_token"),
 
+    path('register/user/', RegisterUserView.as_view(), name="register-user"),
     path('register/caretaker/', CaretakerRegisterView.as_view(), name="register-caretaker"),
     path('register/student/', StudentRegisterView.as_view(), name="register-student"),
 
