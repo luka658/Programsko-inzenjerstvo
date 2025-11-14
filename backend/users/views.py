@@ -14,12 +14,12 @@ def search_caretakers(request):
     print(query)
 
     if not query:
-        return Response([])
-
-    caretakers = Caretaker.objects.filter(
-        Q(user__first_name__icontains=query) |
-        Q(user__last_name__icontains=query)
-    )
+        caretakers = Caretaker.objects.all()
+    else:
+        caretakers = Caretaker.objects.filter(
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+        )
 
     serialized = CaretakerShortSerializer(caretakers, many=True)
     return Response(serialized.data)
