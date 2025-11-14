@@ -1,100 +1,127 @@
-from django.shortcuts import render
-
-from django.contrib.auth import get_user_model, authenticate
-from rest_framework import generics
+from django.db.models import Q
+from accounts.models import Caretaker, Student
+from .serializers import CaretakerLongSerializer, CaretakerShortSerializer
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view
 
 # Create your views here.
 
 
-User = get_user_model()
+@api_view(["GET"])
+def search_caretakers(request):
+    query = request.GET.get("q", "").strip()
 
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    permission_classes = [AllowAny]
-    serializer_class = RegisterSerializer
+    print(query)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        email = serializer.validated_data["email"]
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "Korisnik s ovim email-om već postoji"}, status=400)
-
-        user = serializer.save()
-
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
-
-        response = Response({
-            "user": UserSerializer(user).data,
-            "refresh": str(refresh),
-            "access": str(access),
-        })
-
-        response.set_cookie(
-            key="accessToken",
-            value=str(access),
-            httponly=True,
-            secure=True,
-            samesite=None,
-            path="/"
+    if not query:
+        caretakers = Caretaker.objects.all()
+    else:
+        caretakers = Caretaker.objects.filter(
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
         )
 
-        response.set_cookie(
-            key="refreshToken",
-            value=str(refresh),
-            httponly=True,
-            secure=True,
-            samesite=None,
-            path="/"
-        )
+    serialized = CaretakerShortSerializer(caretakers, many=True)
+    return Response(serialized.data)
 
-        return response
-    
-class LoginView(generics.CreateAPIView):
-    serializer_class = LoginSerializer
-    permission_classes=[AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        email = request.data["email"]
-        password=request.data["password"]
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from .serializers import (
+    MeSerializer,
+    UpdateUserSerializer,
+    ChangePasswordSerializer,
+    CaretakerUpdateSerializer,
+)
 
-        user = authenticate(request, email=email, password=password)
 
-        if not user:
-            return Response({"error": "Neispravno korisničko ime ili lozinka"}, status=400)
-        
+@api_view(["GET", "PUT", "PATCH"])
+@permission_classes([IsAuthenticated])
+def my_profile(request):
+    user = request.user
+    if request.method == "GET":
+        serializer = MeSerializer(user)
+        return Response(serializer.data)
 
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
+    partial = request.method == "PATCH"
+    serializer = UpdateUserSerializer(user, data=request.data, partial=partial)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(MeSerializer(user).data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        response = Response({
-            "user": UserSerializer(user).data,
-            "refresh": str(refresh),
-            "access": str(access),
-        })
 
-        response.set_cookie(
-            key="accessToken",
-            value=str(access),
-            httponly=True,
-            secure=True,
-            samesite=None,
-            path="/"
-        )
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    serializer = ChangePasswordSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        response.set_cookie(
-            key="refreshToken",
-            value=str(refresh),
-            httponly=True,
-            secure=True,
-            samesite=None,
-            path="/",
-        )
+    user = request.user
+    old = serializer.validated_data.get("old_password")
+    if not user.check_password(old):
+        return Response({"old_password": "Pogrešna trenutna lozinka."}, status=status.HTTP_400_BAD_REQUEST)
 
-        return response
+    user.set_password(serializer.validated_data.get("new_password"))
+    user.save()
+    return Response({"detail": "Lozinka je uspješno promijenjena."}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET", "PUT", "PATCH"])
+@permission_classes([IsAuthenticated])
+def my_caretaker_profile(request):
+    try:
+        caretaker = request.user.caretaker
+    except Caretaker.DoesNotExist:
+        return Response({"detail": "Korisnik nije psiholog/caretaker."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        return Response(CaretakerShortSerializer(caretaker).data)
+
+    partial = request.method == "PATCH"
+    serializer = CaretakerUpdateSerializer(caretaker, data=request.data, partial=partial)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(CaretakerShortSerializer(caretaker).data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "PUT", "PATCH"])
+@permission_classes([IsAuthenticated])
+def my_student_profile(request):
+    try:
+        student = request.user.student
+    except Student.DoesNotExist:
+        return Response({"detail": "Korisnik nije student."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        from .serializers import StudentSerializer
+        return Response(StudentSerializer(student).data)
+
+    partial = request.method == "PATCH"
+    from .serializers import StudentUpdateSerializer
+    serializer = StudentUpdateSerializer(student, data=request.data, partial=partial)
+    if serializer.is_valid():
+        serializer.save()
+        from .serializers import StudentSerializer
+        return Response(StudentSerializer(student).data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def caretakerById(request, id):
+    try:
+        caretaker = Caretaker.objects.get(user_id=id)
+    except:
+        return Response({"error":f"No caretaker was found matching the specified ID ({id})."}, status=404)
+
+    serialized = CaretakerLongSerializer(caretaker)
+    return Response(serialized.data)
+
+
+#jos se ne koristi
+@api_view(["GET"])
+def caretakerBySlug(request, slug):
+    return Response(f"slug: {id}")
