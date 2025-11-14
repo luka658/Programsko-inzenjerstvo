@@ -11,3 +11,7 @@ admin.site.register(User)
 admin.site.register(Student)
 admin.site.register(Caretaker, CaretakerAdmin)
 admin.site.register(HelpCategory)
+
+admin.site.site_header = "CareFree Administration"
+admin.site.site_title = "CareFree Admin Page"
+admin.site.index_title = "CareFree Admin"

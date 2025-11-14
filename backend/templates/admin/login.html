@@ -1,0 +1,26 @@
+{% extends "admin/login.html" %}
+{% load i18n static %}
+
+{# Ensure branding matches everywhere, including login #}
+{% block branding %}
+  <h1 id="site-name"><a href="{% url 'admin:index' %}">CareFree Admin</a></h1>
+{% endblock %}
+
+{% block title %}CareFree Administration{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    :root { --cf-primary: oklch(0.783 0.1136 182.2); }
+    #header { background: var(--cf-primary) !important; }
+    #header a:link, #header a:visited { color: #fff; }
+    .submit-row input[type="submit"], .button.default {
+      background: var(--cf-primary) !important;
+      border-color: color-mix(in oklch, var(--cf-primary) 80%, black) !important;
+      color: #fff !important;
+    }
+    .submit-row input[type="submit"]:hover, .button.default:hover {
+      background: color-mix(in oklch, var(--cf-primary) 85%, black) !important;
+    }
+  </style>
+{% endblock %}

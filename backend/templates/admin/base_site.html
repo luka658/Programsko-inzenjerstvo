@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{# Replace the branding text #}
+{% block branding %}
+  <h1 id="site-name"><a href="{% url 'admin:index' %}">CareFree Admin</a></h1>
+{% endblock %}
+
+{# Update the <title> tag #}
+{% block title %}CareFree Administration{% endblock %}
+
+{# Inject just a tiny bit of CSS to swap the default admin blue with the requested color #}
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    :root {
+      /* Primary CareFree brand color */
+      --cf-primary: oklch(0.783 0.1136 182.2);
+      /* The exact darker tone used for table header cells */
+      --cf-table-header: color-mix(in oklch, var(--cf-primary) 85%, black);
+    }
+
+    /* Header bar */
+    #header {
+      background: var(--cf-primary) !important;
+    }
+    #header a:link, #header a:visited { color: #fff; }
+
+    /* Breadcrumbs bar (under header) — match first table header cells color */
+    .breadcrumbs, #breadcrumbs {
+      background: var(--cf-table-header) !important;
+      border-bottom-color: color-mix(in oklch, var(--cf-primary) 35%, white) !important;
+    }
+    .breadcrumbs a, #breadcrumbs a,
+    .breadcrumbs { color: #fff !important; }
+
+    /* Table header cells and module section titles share the same tone */
+    thead th { background: var(--cf-table-header) !important; color: #fff; }
+    .module caption, .module h2, .inline-group h2 {
+      background: var(--cf-table-header);
+      color: #fff;
+    }
+
+    /* Primary buttons */
+    .button, input[type="submit"], .button.default, .submit-row input.default {
+      background: var(--cf-primary) !important;
+      border-color: color-mix(in oklch, var(--cf-primary) 80%, black) !important;
+      color: #fff !important;
+    }
+    .button:hover, input[type="submit"]:hover, .button.default:hover, .submit-row input.default:hover {
+      background: color-mix(in oklch, var(--cf-primary) 85%, black) !important;
+    }
+
+    /* Focus ring accents */
+    :focus { outline-color: color-mix(in oklch, var(--cf-primary) 60%, black); }
+
+    /* Selected row highlight (list pages) */
+    tr.selected { background: color-mix(in oklch, var(--cf-primary) 12%, white) !important; }
+
+    /* Filters title (right sidebar on changelist) */
+    #changelist-filter h2 { background: var(--cf-primary); color: #fff; }
+  </style>
+{% endblock %}
