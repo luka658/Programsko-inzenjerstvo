@@ -8,7 +8,7 @@ import {
     InputGroupButton,
 } from "@/components/ui/input-group";
 
-export default function SearchBar({ initial = "" }: { initial?: string }) {
+export default function SearchBar({ initial = "" }: { initial: string }) {
     return (
         <form action="/search" method="get" className="w-full">
             <InputGroup className="h-12">
