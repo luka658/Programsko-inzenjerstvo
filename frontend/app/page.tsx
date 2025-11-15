@@ -10,6 +10,7 @@ export default function Home() {
         <div className="space-x-2">
           <Button asChild><Link href="/accounts/login">Login</Link></Button>
           <Button asChild><Link href="/accounts/signup">Sign Up</Link></Button>
+          <Button asChild><Link href="/carefree/main">Home</Link></Button>
         </div>
       </div>
     </div>
