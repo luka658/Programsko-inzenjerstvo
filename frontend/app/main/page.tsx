@@ -27,7 +27,7 @@ export default function MainPage() {
                         <img src="/images/carefree-logo-assistant-new.png" alt="Carefree Logo"/>
                     </div>
                     <div>
-                        <CardTitle className="p-1 text-3xl font-bold">CareFree</CardTitle>
+                        <CardTitle className="p-1 text-3xl font-bold text-primary">CareFree</CardTitle>
                     </div>
                 </div>
                 <div className="p-[0.4em] flex rounded-full px-4 py-2 bg-background">
@@ -44,7 +44,7 @@ export default function MainPage() {
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <CardContent  className="my-1">
-                        <Link className="font-semibold cursor-pointer hover:underline" href={`http://localhost:3001/myprofile`}>My Profile</Link>
+                        <Link className="font-semibold cursor-pointer hover:underline" href={`http://localhost:3001/carefree/myprofile`}>My Profile</Link>
                     </CardContent>
                 </div>
             </div>

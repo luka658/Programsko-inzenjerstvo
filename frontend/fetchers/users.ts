@@ -34,7 +34,7 @@ interface caretakerLong {
 // }
 
 export function searchCaretakers(query: string) {
-    return fetcher<Array<caretaker>>(`${BACKEND_API}/users/caretakers/search?q=${encodeURIComponent(query)}`,  { credentials: "include" })
+    return fetcher<Array<caretaker>>(`${BACKEND_API}/users/caretakers/search/?q=${encodeURIComponent(query)}`,  { credentials: "include" })
 }
 
 export function searchCaretakerById(query: string) {
