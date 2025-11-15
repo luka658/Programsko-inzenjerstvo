@@ -2,7 +2,13 @@
 CareFree je web aplikacija koja studentima pruža siguran, anoniman i brzo dostupan kanal za psihološku podršku. Kombinira AI-agenta za inicijalnu procjenu s mogućnošću povezivanja sa licenciranim psihološkim stručnjacima.
 
 deployment: https://programsko-inzenjerstvo.vercel.app/accounts/login
-backend: https://programsko-inzenjerstvo-production-9d1d.up.railway.app/
+
+backend: https://programsko-inzenjerstvo-production-9d1d.up.railway.app/admin
+
+django admin user: test.admin@email.com
+
+password: 12345678
+
 
 ## Motivacija
 Mnogi studenti izbjegavaju tražiti stručnu pomoć zbog stigme, troškova i nedostatka vremena. Fizičke konzultacije zahtijevaju putovanje i zakazivanje, što dodatno otežava pristup potpori. CareFree rješava ovaj problem nudeći 24/7 podršku, poptunu anonimnost, besplatnu uslugu i široku ponudu profesionalih psihologa. Projekt je napravljen u sklopu predmeta Programsko inženjerstvo na FER-u u semestru 2025./2026.
