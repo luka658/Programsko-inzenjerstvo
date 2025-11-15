@@ -40,7 +40,7 @@ export function LoginForm({
 
     
     try {
-      const response = await fetch("https://programsko-inzenjerstvo-production.up.railway.app", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
