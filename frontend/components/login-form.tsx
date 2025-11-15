@@ -40,7 +40,7 @@ export function LoginForm({
 
     
     try {
-      const response = await fetch("http://localhost:8000/auth/login/", {
+      const response = await fetch("https://programsko-inzenjerstvo-production.up.railway.app", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
