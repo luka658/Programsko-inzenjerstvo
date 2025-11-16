@@ -29,6 +29,7 @@ export default function SearchPage() {
     const [isAuthed, setIsAuthed] = useState(false);
 
     useEffect(() => {
+      
         (async () => {
             try {
                 const response = await fetch(`${BACKEND}/users/me/`, {
@@ -38,16 +39,20 @@ export default function SearchPage() {
                     setIsAuthed(true);
                 } else {
                     setIsAuthed(false);
-                    router.push("/accounts/login");
                 }
             } catch (error) {
                 setIsAuthed(false);
-                router.push("/accounts/login");
             } finally {
                 setAuthChecked(true);
             }
         })();
     }, [router]);
+
+  useEffect(() => {
+    if (authChecked && !isAuthed) {
+    router.push("/accounts/login");
+    }
+  }, [authChecked, isAuthed, router]);
 
     const { data, error, isLoading } = useSWR(
         authChecked && isAuthed ? ["caretakerSearch", q ?? ""] : null,
