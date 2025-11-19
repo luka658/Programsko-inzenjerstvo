@@ -212,6 +212,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://programsko-inzenjerstvo.vercel.app"
 ]
 
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://programsko-inzenjerstvo.vercel.app",
+    "https://*.railway.app",
+]
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3001")
