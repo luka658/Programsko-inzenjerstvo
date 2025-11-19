@@ -32,6 +32,8 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [
     ".railway.app",
+    "programsko-inzenjerstvo-production-9d1d4up.railway.app",
+    "localhost",
     "localhost",
     "127.0.0.1"
 ]
