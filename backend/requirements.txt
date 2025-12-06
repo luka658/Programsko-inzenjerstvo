@@ -6,5 +6,9 @@ djangorestframework_simplejwt==5.5.1
 PyJWT==2.10.1
 sqlparse==0.5.3
 tzdata==2025.2
-gunicorn
 drf-spectacular
+gunicorn==22.0.0
+dj-database-url==2.2.0
+python-dotenv==1.0.1
+whitenoise==6.7.0
+psycopg[binary,pool]

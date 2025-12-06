@@ -49,7 +49,7 @@ class User(AbstractUser):
         ("O", "OTHER"),
     ]
 
-    sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=False, null=False)
+    sex = models.CharField(max_length=10, choices=SEX_CHOICES, blank=False, null=False)
     age = models.PositiveIntegerField(validators=[MaxValueValidator(MAX_USER_AGE)])
 
     datum_registracije = models.DateTimeField(auto_now_add=True)
