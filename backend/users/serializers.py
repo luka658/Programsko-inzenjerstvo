@@ -10,7 +10,7 @@ User = get_user_model()
 class CaretakerShortSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
-    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='label')
+    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='slug')
 
     class Meta:
         model = Caretaker
@@ -21,7 +21,7 @@ class CaretakerShortSerializer(serializers.ModelSerializer):
 class CaretakerLongSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
-    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='label')
+    help_categories = serializers.SlugRelatedField(many=True, read_only=True, slug_field='slug')
 
     class Meta:
         model = Caretaker
@@ -86,5 +86,23 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
         model = Student
         fields = ["studying_at", "year_of_study", "about_me"]
         #fields = ["user_id", "first_name", "last_name", "academic_title", "help_categories", "user_image_url", "specialisation", "working_since"]
+
+
+# Serializers for help categories output
+from accounts.models import HelpCategory
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HelpCategory
+        fields = ("id", "label", "slug")
+
+
+class CategoryWithSubcategoriesSerializer(serializers.ModelSerializer):
+    subcategories = SubCategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = HelpCategory
+        fields = ("id", "label", "slug", "subcategories")
 
 

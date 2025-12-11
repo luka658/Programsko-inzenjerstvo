@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.validators import MaxValueValidator
+from django.utils.text import slugify
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -115,7 +116,26 @@ class Caretaker(models.Model):
 
 class HelpCategory(models.Model):
     label = models.CharField(max_length=50, unique=True)
+    # machine-friendly slug generated from label (spaces -> '-')
+    slug = models.SlugField(max_length=60, unique=True, blank=True)
     description = models.TextField(max_length=200, blank=True, null=True)
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        related_name='subcategories',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
-        return f"{self.label}"
+        if self.parent:
+            return f"{self.parent.label}: {self.label}"
+        return self.label
+
+    def save(self, *args, **kwargs):
+        # generate slug from label if not present; ensure uniqueness
+        if not self.slug:
+            # slug is derived from the label by replacing spaces and
+            # non-url-friendly chars; `label` is unique so slug will be unique
+            self.slug = slugify(self.label)
+        super().save(*args, **kwargs)
